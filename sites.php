@@ -47,7 +47,7 @@ else:
                     // ];
                     
 
-                // IF INVALID PASSWORD
+                // IF INVALID
                 else:
                     $returnData = msg(0,422);
                 endif;
