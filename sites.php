@@ -31,20 +31,14 @@ else:
 
         try{
             
-            $fetch_site_by_supervisor = "SELECT super_site.site_id, supervisor_site.site_id, supervisor_site.site_name, supervisor_site.site_address FROM super_site INNER JOIN supervisor_site ON super_site.site_id = supervisor_site.site_id INNER JOIN `supervisor` ON super_site.supervisor_id = supervisor.supervisor_id WHERE `super_site`.`supervisor_id`=:supervisor_id"; 
+            $fetch_site_by_supervisor = "SELECT super_site.site_id, supervisor_site.site_id, supervisor_site.site_name, supervisor_site.site_address FROM super_site INNER JOIN supervisor_site ON super_site.site_id = supervisor_site.site_id INNER JOIN `supervisor` ON super_site.supervisor_id = supervisor.supervisor_id WHERE `super_site`.`supervisor_id`=:supervisor_id && `supervisor_site`.`isActive`=1";
             $query_stmt = $conn->prepare($fetch_site_by_supervisor);
             $query_stmt->bindValue(':supervisor_id', $supervisor_id,PDO::PARAM_STR);
             $query_stmt->execute();
 
-            // IF THE USER IS FOUNDED BY EMAIL
+            // IF THE Sites are found
             if($query_stmt->rowCount()):
                 $row = $query_stmt->fetchAll(PDO::FETCH_ASSOC);
-               
-                    // $returnData = [
-                    //     'success' => 1,
-                    //     'message' => 'Success',
-                    //     'sites' => $row
-                    // ];
                     
 
                 // IF INVALID

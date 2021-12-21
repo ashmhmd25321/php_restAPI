@@ -53,7 +53,7 @@ else:
     else:
         try{
             
-            $fetch_user_by_email = "SELECT * FROM `supervisor` WHERE `email`=:email";
+            $fetch_user_by_email = "SELECT * FROM `supervisor` WHERE `email`=:email && `isActive`=1";
             $query_stmt = $conn->prepare($fetch_user_by_email);
             $query_stmt->bindValue(':email', $email,PDO::PARAM_STR);
             $query_stmt->execute();
@@ -87,7 +87,7 @@ else:
 
             // IF THE USER IS NOT FOUNDED BY EMAIL THEN SHOW THE FOLLOWING ERROR
             else:
-                $returnData = msg(0,422,'Invalid Email Address!');
+                $returnData = msg(0,422,'Please check the email or check if the user is active or not');
             endif;
         }
         catch(PDOException $e){
