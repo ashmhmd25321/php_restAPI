@@ -31,7 +31,7 @@ else:
 
         try{
             
-            $fetch_question_by_site = "SELECT question_site.question_id, question_table.question_id, question_table.question FROM question_site INNER JOIN question_table ON question_site.question_id = question_table.question_id INNER JOIN `supervisor_site` ON question_site.site_id = supervisor_site.site_id WHERE `question_site`.`site_id`=:site_id";
+            $fetch_question_by_site = "SELECT question_site.question_id, questions_table.question_id, questions_table.question FROM question_site INNER JOIN questions_table ON question_site.question_id = questions_table.question_id INNER JOIN `supervisor_site` ON question_site.site_id = supervisor_site.site_id WHERE `question_site`.`site_id`=:site_id";
             $query_stmt = $conn->prepare($fetch_question_by_site);
             $query_stmt->bindValue(':site_id', $site_id,PDO::PARAM_STR);
             $query_stmt->execute();
