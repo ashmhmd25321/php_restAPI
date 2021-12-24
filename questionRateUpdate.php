@@ -67,8 +67,11 @@ else:
                                         WHERE 
                                         question_id = :question_id AND date = :date AND site_id = :site_id AND supervisor_id = :supervisor_id";
 
-            $insert_stmt = $conn->prepare($insert_query);
+            
 
+            if($insert_query === TRUE) {
+
+            $insert_stmt = $conn->prepare($insert_query);
             // DATA BINDING
             $insert_stmt->bindValue(':question_id', $question_id,PDO::PARAM_STR);
             $insert_stmt->bindValue(':question_rating', $question_rating,PDO::PARAM_STR);
@@ -81,6 +84,12 @@ else:
             $insert_stmt->execute();
 
             $returnData = msg(1,201,'You have successfully Updated the question.');
+            echo json_encode($returnData);
+            }
+
+            else{
+                echo "Error updating record";
+            }
 
         }
         catch(PDOException $e){
@@ -88,6 +97,6 @@ else:
         }
     endif;
 
-echo json_encode($returnData);
+
 
 ?>
