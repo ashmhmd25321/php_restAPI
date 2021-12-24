@@ -39,26 +39,24 @@ else:
             // IF THE USER IS FOUNDED BY EMAIL
             if($query_stmt->rowCount()):
                 $row = $query_stmt->fetchAll(PDO::FETCH_ASSOC);
-               
-                    // $returnData = [
-                    //     'success' => 1,
-                    //     'message' => 'Success',
-                    //     'sites' => $row
-                    // ];
+
+                echo json_encode($row);
                     
 
-                // IF INVALID PASSWORD
+                // IF INVALID
                 else:
-                    $returnData = msg(0,422,'Invalid Password!');
+                    $returnData = msg(0,422,'Invalid');
+                    echo json_encode($returnData);
                 endif;
         }
         catch(PDOException $e){
             $returnData = msg(0,500,$e->getMessage());
+            echo json_encode($returnData);
         }
 
     endif;
 
-echo json_encode($row);
+
 
 
 ?>

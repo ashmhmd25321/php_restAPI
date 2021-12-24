@@ -23,7 +23,7 @@ $data = json_decode(file_get_contents("php://input"));
 $returnData = [];
 
 // IF REQUEST METHOD IS NOT POST
-if($_SERVER["REQUEST_METHOD"] != "PUT"):
+if($_SERVER["REQUEST_METHOD"] != "POST"):
     $returnData = msg(0,404,'Page Not Found!');
 
 // CHECKING EMPTY FIELDS
@@ -54,7 +54,7 @@ else:
     
         try{
 
-            $insert_query = "UPDATE
+            $update_query = "UPDATE
                                     question_rate
                                         SET
                                         question_id = :question_id, 
@@ -67,36 +67,32 @@ else:
                                         WHERE 
                                         question_id = :question_id AND date = :date AND site_id = :site_id AND supervisor_id = :supervisor_id";
 
-            
-
-            if($insert_query === TRUE) {
-
-            $insert_stmt = $conn->prepare($insert_query);
+            $update_stmt = $conn->prepare($update_query);
             // DATA BINDING
-            $insert_stmt->bindValue(':question_id', $question_id,PDO::PARAM_STR);
-            $insert_stmt->bindValue(':question_rating', $question_rating,PDO::PARAM_STR);
-            $insert_stmt->bindValue(':note', $note,PDO::PARAM_STR);
-            $insert_stmt->bindValue(':image', $image,PDO::PARAM_STR);
-            $insert_stmt->bindValue(':date', $date,PDO::PARAM_STR);
-            $insert_stmt->bindValue(':site_id', $site_id,PDO::PARAM_STR);
-            $insert_stmt->bindValue(':supervisor_id', $supervisor_id,PDO::PARAM_STR);
+            $update_stmt->bindValue(':question_id', $question_id,PDO::PARAM_STR);
+            $update_stmt->bindValue(':question_rating', $question_rating,PDO::PARAM_STR);
+            $update_stmt->bindValue(':note', $note,PDO::PARAM_STR);
+            $update_stmt->bindValue(':image', $image,PDO::PARAM_STR);
+            $update_stmt->bindValue(':date', $date,PDO::PARAM_STR);
+            $update_stmt->bindValue(':site_id', $site_id,PDO::PARAM_STR);
+            $update_stmt->bindValue(':supervisor_id', $supervisor_id,PDO::PARAM_STR);
+            $update_stmt->execute();
 
-            $insert_stmt->execute();
+            if($update_stmt->rowCount()):
 
             $returnData = msg(1,201,'You have successfully Updated the question.');
             echo json_encode($returnData);
-            }
+    
 
-            else{
-                echo "Error updating record";
-            }
+            else:
+                echo "Invalid data or You have already updated the question";
+            endif;
 
         }
         catch(PDOException $e){
             $returnData = msg(0,500,$e->getMessage());
+            echo json_encode($returnData);
         }
     endif;
-
-
 
 ?>

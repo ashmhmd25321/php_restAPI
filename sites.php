@@ -39,20 +39,24 @@ else:
             // IF THE Sites are found
             if($query_stmt->rowCount()):
                 $row = $query_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                echo json_encode($row);
                     
 
                 // IF INVALID
                 else:
-                    $returnData = msg(0,422);
+                    echo "Invalid data";
                 endif;
         }
         catch(PDOException $e){
             $returnData = msg(0,500,$e->getMessage());
+
+            echo json_encode($returnData);
         }
 
     endif;
 
-echo json_encode($row);
+
 
 
 ?>

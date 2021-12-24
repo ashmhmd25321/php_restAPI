@@ -34,7 +34,7 @@ else:
 
         try{
             
-            $fetch_questionRate_by_id = "SELECT * FROM question_rate WHERE question_id = :question_id AND date = :date AND site_id = :site_id AND supervisor_id = :supervisor_id";
+            $fetch_questionRate_by_id = "SELECT * FROM question_rate WHERE question_id = :question_id && date = :date && site_id = :site_id && supervisor_id = :supervisor_id";
             $query_stmt = $conn->prepare($fetch_questionRate_by_id);
             $query_stmt->bindValue(':question_id', $question_id,PDO::PARAM_STR);
             $query_stmt->bindValue(':date', $date,PDO::PARAM_STR);
@@ -45,20 +45,25 @@ else:
             // IF THE question rates are found
             if($query_stmt->rowCount()):
                 $row = $query_stmt->fetchAll(PDO::FETCH_ASSOC);
-                    
+                $returnData = $row;
 
+                echo json_encode($returnData);
+                    
                 // IF INVALID
                 else:
-                    $returnData = msg(0,422);
+                    echo "Invalid data";
                 endif;
         }
         catch(PDOException $e){
             $returnData = msg(0,500,$e->getMessage());
+
+            echo json_encode($returnData);
+
         }
 
     endif;
 
-echo json_encode($row);
+
 
 
 ?>
