@@ -32,13 +32,15 @@ elseif(!isset($data->question_id)
     || !isset($data->date)
     || !isset($data->site_id)
     || !isset($data->supervisor_id)
+    || !isset($data->inserted)
     || empty(trim($data->question_id))
     || empty(trim($data->date))
     || empty(trim($data->site_id))
     || empty(trim($data->supervisor_id))
+    || empty(trim($data->inserted))
     ):
 
-    $fields = ['fields' => ['question_id','question_rating','note', 'image', 'date', 'site_id', 'supervisor_id']];
+    $fields = ['fields' => ['question_id','question_rating','note', 'image', 'date', 'site_id', 'supervisor_id', 'inserted']];
     $returnData = msg(0,422,'Please Fill in all Required Fields!',$fields);
 
 // IF THERE ARE NO EMPTY FIELDS THEN-
@@ -51,10 +53,11 @@ else:
     $date = ($data->date);
     $site_id = trim($data->site_id);
     $supervisor_id = trim($data->supervisor_id);
+    $inserted = trim($data->inserted);
     
         try{
 
-            $insert_query = "INSERT INTO `question_rate`(`question_id`, `question_rating`, `note`, `image`, `date`, `site_id`, `supervisor_id`) VALUES (:question_id,:question_rating,:note,:image,:date,:site_id,:supervisor_id)";
+            $insert_query = "INSERT INTO `question_rate`(`question_id`, `question_rating`, `note`, `image`, `date`, `site_id`, `supervisor_id`, `inserted`) VALUES (:question_id,:question_rating,:note,:image,:date,:site_id,:supervisor_id,:inserted)";
 
             $insert_stmt = $conn->prepare($insert_query);
 
@@ -62,14 +65,36 @@ else:
             $insert_stmt->bindValue(':question_id', $question_id,PDO::PARAM_STR);
             $insert_stmt->bindValue(':question_rating', $question_rating,PDO::PARAM_STR);
             $insert_stmt->bindValue(':note', $note,PDO::PARAM_STR);
-            $insert_stmt->bindValue(':image', $image,PDO::PARAM_STR);
+            $insert_stmt->bindValue(':image', $image, PDO::PARAM_STR);
             $insert_stmt->bindValue(':date', $date,PDO::PARAM_STR);
             $insert_stmt->bindValue(':site_id', $site_id,PDO::PARAM_STR);
             $insert_stmt->bindValue(':supervisor_id', $supervisor_id,PDO::PARAM_STR);
+            $insert_stmt->bindValue(':inserted', $inserted,PDO::PARAM_STR);
 
-            $insert_stmt->execute();
+            move_uploaded_file($image, "pictures/$image");
+
+            if($insert_stmt->execute()){
+
+            $insert_query2 = "INSERT INTO `question_rate_finished`(`question_id`, `question_rating`, `note`, `image`, `date`, `site_id`, `supervisor_id`, `inserted`) VALUES (:question_id,:question_rating,:note,:image,:date,:site_id,:supervisor_id,:inserted)";
+
+            $insert_stmt2 = $conn->prepare($insert_query2);
+
+            // DATA BINDING
+            $insert_stmt2->bindValue(':question_id', $question_id,PDO::PARAM_STR);
+            $insert_stmt2->bindValue(':question_rating', $question_rating,PDO::PARAM_STR);
+            $insert_stmt2->bindValue(':note', $note,PDO::PARAM_STR);
+            $insert_stmt2->bindValue(':image', $image,PDO::PARAM_STR);
+            $insert_stmt2->bindValue(':date', $date,PDO::PARAM_STR);
+            $insert_stmt2->bindValue(':site_id', $site_id,PDO::PARAM_STR);
+            $insert_stmt2->bindValue(':supervisor_id', $supervisor_id,PDO::PARAM_STR);
+            $insert_stmt2->bindValue(':inserted', $inserted,PDO::PARAM_STR);
+
+            $insert_stmt2->execute();
+
+
 
             $returnData = msg(1,201,'You have successfully Answered the question.');
+            }
 
         }
         catch(PDOException $e){
